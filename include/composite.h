@@ -26,11 +26,10 @@ namespace ifopt{
  */
 
 class Component{
-
 public:
-    typedef  std::shared_ptr<Component> Ptr;
+    typedef std::shared_ptr<Component> Ptr;
 
-    using Jacobian = Eigen::SparseMatrix<double, Eigen::RowMajor>;
+    using Jacobian = Eigen::SparseMatrix<double, Eigen::RowMajor>; // Sparse matrix存储了非零元素与元素的索引
     using VectorXd = Eigen::VectorXd;
     using VecBound = std::vector<Bounds>;
 
@@ -40,9 +39,9 @@ public:
      * @param  name  The identifier for this component.
      *
      * The number of rows @c num_rows can represent either
-     * @li number of variables in this variables set
-     * @li number of constraints in this constraint set
-     * @li 1 if this component represents a Cost.
+     * @li number of variables in this variables set        用于表示变量的数目
+     * @li number of constraints in this constraint set     用于表示约束的数目
+     * @li 1 if this component represents a Cost.           表示cost时候设为1
      */
 
     Component(int num_rows, const std::string& name);
@@ -51,25 +50,25 @@ public:
     /**
      * @brief  Returns the "values" of whatever this component represents.
      *
-     * @li For Variable this represents the actual optimization values.
-     * @li For Constraint this represents the constraint value g.
-     * @li For Cost this represents the cost value.
+     * @li For Variable this represents the actual optimization values. 取回变量的值
+     * @li For Constraint this represents the constraint value g.       表示约束的值
+     * @li For Cost this represents the cost value.                     表示cost的值
      */
     virtual VectorXd GetValues() const = 0;
 
      /**
      * @brief  Returns the "bounds" of this component.
      *
-     * @li For Variable these are the upper and lower variable bound.
-     * @li For Constraint this represents the constraint bounds.
-     * @li For Cost these done't exists (set to infinity).
+     * @li For Variable these are the upper and lower variable bound.  变量的上下界
+     * @li For Constraint this represents the constraint bounds.       约束的上下界
+     * @li For Cost these done't exists (set to infinity).             cost不应包含此属性
      */
     virtual VecBound GetBounds() const = 0;
 
     /**
      * @brief  Sets the optimization variables from an Eigen vector.
      *
-     * This is only done for Variable, where these are set from the current
+     * This is only done for Variable, where these are set from the current 设置变量的值, 只对变量有效
      * values of the @ref solvers.
      */
     virtual void SetVariables(const VectorXd& x) = 0;
@@ -77,9 +76,9 @@ public:
     /**
      * @brief  Returns derivatives of each row w.r.t. the variables
      *
-     * @li For Constraint this is a matrix with one row per constraint.
-     * @li For a Cost this is a row vector (gradient transpose).
-     * @li Not sensible for Variable.
+     * @li For Constraint this is a matrix with one row per constraint. 约束对变量的雅克比
+     * @li For a Cost this is a row vector (gradient transpose).        cost对变量的雅克比
+     * @li Not sensible for Variable.                                   对变量是没有用的
      */
     virtual Jacobian GetJacobian() const = 0;
 
@@ -94,8 +93,8 @@ public:
     std::string GetName() const;
 
     /**
-     * @brief Prints the relevant information (name, rows, values) of this component.
-     * @param tolerance  When to flag constraint/bound violation.
+     * @brief Prints the relevant information (name, rows, values) of this component.  打印相关的信息
+     * @param tolerance  When to flag constraint/bound violation.                        
      * @param index_start  Of this specific variables-, constraint- or cost set.
      */
     virtual void Print(double tolerance, int& index_start) const;
@@ -124,6 +123,8 @@ private:
  * constraints or costs are ordered and combined.
  *
  * See Component and Composite Pattern for more information.
+ * 
+ * 将各个Component拼接在一起
  */
 
 class Composite : public Component{
@@ -170,7 +171,7 @@ public:
     /**
      * @brief Adds a component to this composite.
      */
-    void AddComponent (const Component::Ptr&);
+    void AddComponent(const Component::Ptr&);
 
     /**
      * @brief Removes all component from this composite.
@@ -189,6 +190,7 @@ private:
 };
 
 // implementation of template functions
+// A type-casted pointer possibly providing addtional functionality. 
 template<typename T>
 std::shared_ptr<T> Composite::GetComponent(const std::string& name) const
 {

@@ -16,6 +16,14 @@ struct Bounds{
     double lower_;
     double upper_;
 
+    Bounds operator+(double scalar){
+        return Bounds(lower_ + scalar, upper_ + scalar);
+    }
+
+    Bounds operator-(double scalar){
+        return Bounds(lower_ - scalar, upper_ - scalar);
+    }
+
     void operator+=(double scalar)
     {
         lower_ += scalar;
@@ -33,8 +41,13 @@ struct Bounds{
 // settings this as signals infinity for IPOPT/SNOPT solvers
 static const double inf = 1.0e20;
 
+// 无边界约束
 static const Bounds NoBound          = Bounds(-inf, +inf);
+
+// 0等式约束
 static const Bounds BoundZero        = Bounds( 0.0,  0.0);
+
+// 不等式约束
 static const Bounds BoundGreaterZero = Bounds( 0.0, +inf);
 static const Bounds BoundSmallerZero = Bounds(-inf,  0.0);
 

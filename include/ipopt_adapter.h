@@ -25,7 +25,34 @@ namespace Ipopt{
  * functionality, but merely delegate it to the Adaptee (the Problem object).
  */
 class IpoptAdapter : public TNLP{
+    // basic class TNLP:
+    /*
+    * Base class for all NLP's that use standard triplet matrix form
+    * and dense vectors.  This is the standard base class for all
+    * NLP's that use the standard triplet matrix form (as for Harwell
+    * routines) and dense vectors. The class TNLPAdapter then converts
+    * this interface to an interface that can be used directly by
+    * ipopt.
+    * 
+    *  This interface presents the problem form:
+    * 
+    *       min f(x)
+    * 
+    *     s.t. gL <= g(x) <= gU
+    * 
+    *          xL <=  x   <= xU
+    * 
+    * In order to specify an equality constraint, set gL_i = gU_i =
+    * rhs.  The value that indicates "infinity" for the bounds
+    * (i.e. the variable or constraint has no lower bound (-infinity)
+    * or upper bound (+infinity)) is set through the option
+    * nlp_lower_bound_inf and nlp_upper_bound_inf.  To indicate that a
+    * variable has no upper or lower bound, set the bound to
+    * -ipopt_inf or +ipopt_inf respectively
+    */
+
 public:
+
     using Problem  = ifopt::Problem;
     using VectorXd = Problem::VectorXd;
     using Jacobian = Problem::Jacobian;
@@ -44,27 +71,27 @@ private:
     Problem* nlp_; ///< The solver independent problem definition
 
     /** Method to return some info about the nlp */
-    virtual bool get_nlp_info(Index& n, Index& m, Index& nnz_jac_g,
-                              Index& nnz_h_lag, IndexStyleEnum& index_style);
+    virtual bool get_nlp_info(Index& n, Index& m, Index& nnz_jac_g,             // Eigen::Index  ///< \deprecated since Eigen 3.3
+                              Index& nnz_h_lag, IndexStyleEnum& index_style) override;
 
     /** Method to return the bounds for my problem */
     virtual bool get_bounds_info(Index n, double* x_l, double* x_u,
-                                Index m, double* g_l, double* g_u);
+                                 Index m, double* g_l, double* g_u) override;
 
     /** Method to return the starting point for the algorithm */
     virtual bool get_starting_point(Index n, bool init_x, double* x,
                                     bool init_z, double* z_L, double* z_U,
                                     Index m, bool init_lambda,
-                                    double* lambda);
+                                    double* lambda) override;
 
     /** Method to return the objective value */
-    virtual bool eval_f(Index n, const double* x, bool new_x, double& obj_value);
+    virtual bool eval_f(Index n, const double* x, bool new_x, double& obj_value) override;
 
     /** Method to return the gradient of the objective */
-    virtual bool eval_grad_f(Index n, const double* x, bool new_x, double* grad_f);
+    virtual bool eval_grad_f(Index n, const double* x, bool new_x, double* grad_f) override;
 
     /** Method to return the constraint residuals */
-    virtual bool eval_g(Index n, const double* x, bool new_x, Index m, double* g);
+    virtual bool eval_g(Index n, const double* x, bool new_x, Index m, double* g) override;
 
     /** Method to return:
      *   1) The structure of the jacobian (if "values" is NULL)
@@ -72,11 +99,11 @@ private:
      */
     virtual bool eval_jac_g(Index n, const double* x, bool new_x,
                             Index m, Index nele_jac, Index* iRow, Index *jCol,
-                            double* values);
+                            double* values) override;
 
     /** This is called after every iteration and is used to save intermediate
         *  solutions in the nlp */
-    virtual bool intermediate_callback(AlgorithmMode mode,
+    virtual bool intermediate_callback( AlgorithmMode mode,
                                         Index iter, double obj_value,
                                         double inf_pr, double inf_du,
                                         double mu, double d_norm,
@@ -84,16 +111,16 @@ private:
                                         double alpha_du, double alpha_pr,
                                         Index ls_trials,
                                         const IpoptData* ip_data,
-                                        IpoptCalculatedQuantities* ip_cq);
+                                        IpoptCalculatedQuantities* ip_cq ) override;
 
     /** This method is called when the algorithm is complete so the TNLP can
-        * store/write the solution */
-    virtual void finalize_solution(SolverReturn status,
+     *  store/write the solution */
+    virtual void finalize_solution( SolverReturn status,
                                     Index n, const double* x, const double* z_L, const double* z_U,
                                     Index m, const double* g, const double* lambda,
                                     double obj_value,
                                     const IpoptData* ip_data,
-                                    IpoptCalculatedQuantities* ip_cq);
+                                    IpoptCalculatedQuantities* ip_cq ) override;
 };
 
 }

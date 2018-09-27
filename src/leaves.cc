@@ -23,23 +23,26 @@ ConstraintSet::Jacobian ConstraintSet::GetJacobian() const
     Jacobian jac;
     std::vector< Eigen::Triplet<double> > triplet_list;
 
-    for (const auto& vars : variables_->GetComponents()) {
+    for(const auto& vars : variables_->GetComponents()){
         int n = vars->GetRows();
         jac.resize(GetRows(), n);
 
         FillJacobianBlock(vars->GetName(), jac);
+
         // reserve space for the new elements to reduce memory allocation
-        triplet_list.reserve(triplet_list.size()+jac.nonZeros());
+        triplet_list.reserve(triplet_list.size() + jac.nonZeros());
 
         // create triplets for the derivative at the correct position in the overall Jacobian
-        for (int k=0; k<jac.outerSize(); ++k)
-        for (Jacobian::InnerIterator it(jac,k); it; ++it)
-            triplet_list.push_back(Eigen::Triplet<double>(it.row(), col+it.col(), it.value()));
+        for(int k=0; k<jac.outerSize(); ++k)
+            for(Jacobian::InnerIterator it(jac,k); it; ++it)
+                triplet_list.push_back(Eigen::Triplet<double>(it.row(), col+it.col(), it.value()));
+        
         col += n;
     }
 
     // transform triplet vector into sparse matrix
     jacobian.setFromTriplets(triplet_list.begin(), triplet_list.end());
+    
     return jacobian;
 }
 
@@ -49,7 +52,8 @@ void ConstraintSet::LinkWithVariables(const VariablesPtr& x)
     InitVariableDependedQuantities(x);
 }
 
-CostTerm::CostTerm (const std::string& name) :ConstraintSet(1, name)
+CostTerm::CostTerm(const std::string& name) 
+    :ConstraintSet(1, name)
 {}
 
 CostTerm::VectorXd CostTerm::GetValues() const
@@ -71,16 +75,16 @@ void CostTerm::Print (double tol, int& index) const
 
     std::cout.precision(2);
     std::cout << std::fixed
-                << std::left
-                << std::setw(30) << GetName()
-                << std::right
-                << std::setw(4) << GetRows()
-                << std::setw(9) << index
-                << std::setfill ('.')
-                << std::setw(7) << index+GetRows()-1
-                << std::setfill (' ')
-                << std::setw(12) << cost
-                << std::endl;
+              << std::left
+              << std::setw(30) << GetName()
+              << std::right
+              << std::setw(4) << GetRows()
+              << std::setw(9) << index
+              << std::setfill ('.')
+              << std::setw(7) << index+GetRows()-1
+              << std::setfill (' ')
+              << std::setw(12) << cost
+              << std::endl;
 }
 
 }

@@ -95,7 +95,7 @@ private:
     virtual void InitVariableDependedQuantities(const VariablesPtr& x_init){}
 
     // doesn't exist for constraints, generated run-time error when used
-    void SetVariables(const VectorXd& x) final{ 
+    void SetVariables(const VectorXd& x) override final{ 
         assert(false); 
     }
 

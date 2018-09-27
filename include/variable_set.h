@@ -26,12 +26,10 @@ public:
     virtual ~VariableSet() = default;
 
     // doesn't exist for variables, generated run-time error when used.
-    Jacobian GetJacobian() const final
+    Jacobian GetJacobian() const override final
     {
         throw std::runtime_error("not implemented for variables");
     }
-
-    
 
 };
 }

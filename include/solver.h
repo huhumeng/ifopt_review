@@ -18,7 +18,7 @@ namespace ifopt {
  *
  * @ingroup Solvers
  */
-class Solver {
+class Solver{
 public:
     typedef std::shared_ptr<Solver> Ptr;
 

@@ -39,7 +39,7 @@ private:
     /**
      * Cost term printout slightly different from variables/constraints.
      */
-    void Print (double tol, int& index) const final;
+    void Print(double tol, int& index) const final;
 };
 
 

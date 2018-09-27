@@ -29,30 +29,30 @@ void Problem::AddCostSet(CostTerm::Ptr cost_set)
     costs_.AddComponent(cost_set);
 }
 
-int Problem::GetNumberOfOptimizationVariables () const
+int Problem::GetNumberOfOptimizationVariables() const
 {
     return variables_->GetRows();
 }
 
-Problem::VecBound Problem::GetBoundsOnOptimizationVariables () const
+Problem::VecBound Problem::GetBoundsOnOptimizationVariables() const
 {
     return variables_->GetBounds();
 }
 
-Problem::VectorXd Problem::GetVariableValues () const
+Problem::VectorXd Problem::GetVariableValues() const
 {
     return variables_->GetValues();
 }
 
-void Problem::SetVariables (const double* x)
+void Problem::SetVariables(const double* x)
 {
     variables_->SetVariables(ConvertToEigen(x));
 }
 
-double Problem::EvaluateCostFunction (const double* x)
+double Problem::EvaluateCostFunction(const double* x)
 {
     VectorXd g = VectorXd::Zero(1);
-    if (HasCostTerms()) {
+    if(HasCostTerms()) {
         SetVariables(x);
         g = costs_.GetValues();
     }
@@ -61,8 +61,8 @@ double Problem::EvaluateCostFunction (const double* x)
 
 Problem::VectorXd Problem::EvaluateCostFunctionGradient (const double* x)
 {
-    Jacobian jac = Jacobian(1,GetNumberOfOptimizationVariables());
-    if (HasCostTerms()) {
+    Jacobian jac = Jacobian(1, GetNumberOfOptimizationVariables());
+    if(HasCostTerms()) {
         SetVariables(x);
         jac = costs_.GetJacobian();
     }

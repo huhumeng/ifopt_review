@@ -33,7 +33,7 @@ public:
 
     /** Options for the IPOPT solver. A complete list can be found here:
         * https://www.coin-or.org/Ipopt/documentation/node40.html
-        */
+    */
     void SetOption(const std::string& name, const std::string& value);
     void SetOption(const std::string& name, int value);
     void SetOption(const std::string& name, double value);

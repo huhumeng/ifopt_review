@@ -72,7 +72,7 @@ public:
     /**
      * @brief  Creates a optimization problem with no variables, costs or constraints.
      */
-    Problem ();
+    Problem();
     virtual ~Problem () = default;
 
     /**
@@ -198,7 +198,9 @@ public:
     /**
      * @brief The number of iterations it took to solve the problem.
      */
-    int GetIterationCount() const { return x_prev.size(); };
+    int GetIterationCount() const{ 
+        return x_prev.size();
+    }
 
     /**
      * @brief Prints the variables, costs and constraints.
