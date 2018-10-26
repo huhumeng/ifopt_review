@@ -107,7 +107,7 @@ public:
      */
     void SetRows(int num_rows);
     
-    static const int kSpecifyLater = -1;
+    static const int kSpecifyLater = -1; // 稍后指定rows
     
 private:
     int num_rows_ = kSpecifyLater;

@@ -33,3 +33,5 @@ target_link_libraries(ifopt_core ${IPOPT_LIBRARIES})
 add_executable(ex_test_ipopt example/ex_test_ipopt.cc)
 
 target_link_libraries(ex_test_ipopt ifopt_core ${IPOPT_LIBRARIES})
+
+add_subdirectory(example/towr)
